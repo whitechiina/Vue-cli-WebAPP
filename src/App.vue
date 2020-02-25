@@ -1,19 +1,49 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+      <v-header @open="show"></v-header>
+      <div class="router">
+        <router-view></router-view>
+      </div>
+      <!-- 蒙层 -->
+      <v-category @close="close" :categorys="categorys" :nav-status="LeftNavStatus"></v-category>
   </div>
 </template>
 
-<style lang="stylus">
-#app
-  font-family Avenir, Helvetica, Arial, sans-serif
-  -webkit-font-smoothing antialiased
-  -moz-osx-font-smoothing grayscale
-  text-align center
-  color #2c3e50
-  margin-top 60px
+<script>
+  import VHeader from './components/v-header.vue';
+  import VCategory from './components/v-category.vue';
+  import { category } from './api/serve.js';
+export default {
+  name: 'App',
+  components: {
+    VHeader,
+    VCategory
+  },
+  data() {
+    return {
+      LeftNavStatus:false,
+      categorys: []
+    }
+  },
+  created () {
+    this.getData()
+  },
+  methods: {
+    getData(){
+      category().then(res=>{
+        this.categorys = res.data.cate1Info
+      })
+    },
+    show(){
+      this.LeftNavStatus = true
+    },
+    close() {
+      this.LeftNavStatus = false
+    }
+  },
+}
+</script>
+<style lang="stylus" scoped>
+.router
+  margin-top 3.125rem /* 50/16 */
 </style>
